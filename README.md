@@ -1,7 +1,7 @@
 # meme.cv
 
 [![CI](https://github.com/NotAKes/meme-cv/actions/workflows/ci.yml/badge.svg)](https://github.com/NotAKes/meme-cv/actions/workflows/ci.yml)
-[![Demo](https://img.shields.io/badge/demo-meme--cv.uprosti.tech-d8d8d2)](https://meme-cv.uprosti.tech)
+[![Demo](https://img.shields.io/badge/demo-meme--cv.uprosti.tech-c3f34a)](https://meme-cv.uprosti.tech)
 
 Computer vision in the browser: match facial expressions and hand gestures to cat memes in real time. Built with TypeScript, MediaPipe and Canvas. Inference runs on the device; camera frames are not uploaded.
 
@@ -83,7 +83,7 @@ npm run dev
 - Переключаемый CV Overlay: рамки, контуры лица, скелет рук, пальцы, сетка лица.
 - PNG-коллаж из кадра камеры и выбранной картинки, с разметкой или без неё.
 - Адаптивный интерфейс, клавиатурный фокус, reduced motion.
-- Нейтральное оформление по умолчанию. На [`/themes`](https://meme-cv.uprosti.tech/themes) можно выбрать одну из двенадцати палитр. Выбор хранится отдельно от калибровки и применяется на главной.
+- Графитовый фон и лаймовый акцент на всех экранах.
 - Локальная обработка и сохранение числовой калибровки.
 
 ## Проверки
@@ -97,7 +97,7 @@ npm run test:e2e
 ```
 
 - **94 модульных теста**: геометрия, слияние оценок жестов, калибровка, пиксельный анализ языка, временное подтверждение, ранжирование и стабилизация.
-- **14 браузерных тестов**: управление камерой, отказ в доступе, overlay, мобильная ширина, SVG-иконки и палитры в WebKit с профилем iPhone, необязательная калибровка и запись персонального профиля.
+- **11 браузерных тестов**: управление камерой, отказ в доступе, overlay, мобильная ширина, SVG-иконки и единое оформление в WebKit с профилем iPhone, необязательная калибровка и запись персонального профиля.
 - Один браузерный тест запускает настоящие модели на синтетическом видеопотоке. Для проверки мастера калибровки подставляются числовые наблюдения.
 - Регрессионные фикстуры содержат реальные числовые выходы MediaPipe на тестовых фотографиях.
 

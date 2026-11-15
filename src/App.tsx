@@ -251,7 +251,7 @@ export default function App() {
   const busy = status === 'loading'
   return <main>
     <a className="skip-link" href="#playground">Перейти к камере</a>
-    <header className="topbar"><a className="brand" href="/"><CatMark className="brand-mark" /><span>meme<span className="brand-dot">.</span>cv</span></a><nav className="site-nav" aria-label="Навигация"><a href="#playground">Камера</a><a href="/themes">Оформление</a><a href="https://uprosti.tech">uprosti.tech <Icon name="arrow-up-right" /></a></nav></header>
+    <header className="topbar"><a className="brand" href="/"><CatMark className="brand-mark" /><span>meme<span className="brand-dot">.</span>cv</span></a><nav className="site-nav" aria-label="Навигация"><a href="#playground">Камера</a><a href="https://uprosti.tech">uprosti.tech <Icon name="arrow-up-right" /></a></nav></header>
     <ReleaseHero onStart={() => { void start(); document.getElementById('playground')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }) }} busy={busy} running={status === 'running'} />
     <section className="section-kicker" id="playground"><div><h2>Камера</h2></div><p>Покажи лицо и руки в кадре.</p></section>
     <div className="workspace">

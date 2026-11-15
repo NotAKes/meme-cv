@@ -4,17 +4,15 @@ type ReleaseHeroProps = {
   onStart: () => void
   busy: boolean
   running: boolean
-  preview?: boolean
 }
 
 /** Camera access is requested only by the explicit start button. */
-export function ReleaseHero({ onStart, busy, running, preview = false }: ReleaseHeroProps) {
-  const Heading = preview ? 'h2' : 'h1'
+export function ReleaseHero({ onStart, busy, running }: ReleaseHeroProps) {
   return (
     <section className="release-hero" aria-labelledby="release-title">
       <div className="hero-copy">
         <div className="eyebrow">Котомемы</div>
-        <Heading id="release-title" className="release-title">meme.cv</Heading>
+        <h1 id="release-title" className="release-title">meme.cv</h1>
         <p className="hero-description">Покажи жест или выражение лица. Рядом появится кот.</p>
         <div className="hero-action-row">
           {running ? (
