@@ -30,11 +30,11 @@ test('mint styling ignores legacy palette settings and preserves calibration', a
     localStorage.setItem('meme-cv-calibration-v1', JSON.stringify({ poses: {}, neutral: { eyesOpen: .7 } }))
   })
   await page.goto('/')
-  await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(185, 230, 207)')
-  await expect(page.locator('.brand-mark')).toHaveCSS('color', 'rgb(185, 230, 207)')
+  await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(120, 221, 179)')
+  await expect(page.locator('.brand-mark')).toHaveCSS('color', 'rgb(120, 221, 179)')
   await expect(page.getByRole('link', { name: 'Оформление', exact: true })).toHaveCount(0)
   await page.reload()
-  await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(185, 230, 207)')
+  await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(120, 221, 179)')
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('meme-cv-calibration-v1')!).neutral.eyesOpen)).toBe(.7)
 })
 
@@ -44,6 +44,6 @@ test('retired theme preview URLs lead to the homepage', async ({ page }) => {
     await expect(page).toHaveURL(/\/$/)
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('meme.cv')
     await expect(page.getByRole('radio')).toHaveCount(0)
-    await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(185, 230, 207)')
+    await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(120, 221, 179)')
   }
 })

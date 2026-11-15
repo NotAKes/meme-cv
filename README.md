@@ -1,7 +1,7 @@
 # meme.cv
 
 [![CI](https://github.com/NotAKes/meme-cv/actions/workflows/ci.yml/badge.svg)](https://github.com/NotAKes/meme-cv/actions/workflows/ci.yml)
-[![Demo](https://img.shields.io/badge/demo-meme--cv.uprosti.tech-b9e6cf)](https://meme-cv.uprosti.tech)
+[![Demo](https://img.shields.io/badge/demo-meme--cv.uprosti.tech-78ddb3)](https://meme-cv.uprosti.tech)
 
 Computer vision in the browser: match facial expressions and hand gestures to cat memes in real time. Built with TypeScript, MediaPipe and Canvas. Inference runs on the device; camera frames are not uploaded.
 
