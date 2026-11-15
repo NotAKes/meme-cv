@@ -9,7 +9,7 @@ test('iPhone UI uses SVG paths instead of emoji-capable decoration', async ({ pa
   await expect(cta.locator('svg[data-icon="arrow-up-right"]')).toHaveAttribute('aria-hidden', 'true')
   await expect(page.locator('.hero-card-star')).toHaveJSProperty('tagName', 'svg')
   await expect(page.locator('.hero-card-star path')).toHaveCount(1)
-  await expect(page.getByRole('link', { name: 'uprosti.tech', exact: true }).locator('svg')).toHaveCount(1)
+  await expect(page.getByRole('navigation').getByRole('link', { name: 'uprosti.tech', exact: true }).locator('svg')).toHaveCount(1)
   expect(await page.locator('main').innerText()).not.toMatch(/[↗↘↙↖↓↑→✳＋■]/u)
   const metrics = await page.locator('.ui-icon').evaluateAll(icons => icons.filter(icon => icon.getClientRects().length).map(icon => {
     const box = icon.getBoundingClientRect()

@@ -32,7 +32,7 @@ main > *, .workspace > *, .details-grid > *, .control-group,
   place-items: center;
   width: 42px;
   height: 44px;
-  color: var(--orange);
+  color: var(--accent);
 }
 
 .brand-mark svg {
@@ -64,8 +64,8 @@ main > *, .workspace > *, .details-grid > *, .control-group,
 }
 
 .site-nav a:hover {
-  border-color: var(--orange);
-  color: var(--orange);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .privacy {
@@ -81,7 +81,7 @@ main > *, .workspace > *, .details-grid > *, .control-group,
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--orange);
+  background: var(--accent);
   flex-shrink: 0;
 }
 
@@ -132,14 +132,14 @@ main > *, .workspace > *, .details-grid > *, .control-group,
   margin-bottom: 47px;
 }
 
-h1 {
+.release-title {
   font-size: clamp(42px, 4.6vw, 69px);
   line-height: 1.03;
   letter-spacing: -3.5px;
   font-weight: 500;
 }
 
-h1 em {
+.release-title em {
   font-family: Georgia, 'Times New Roman', serif;
   font-weight: 400;
   letter-spacing: -3.8px;
@@ -222,7 +222,7 @@ h1 em {
 .hero-cat-card {
   display: flex;
   flex-direction: column;
-  background: var(--orange);
+  background: var(--accent);
   padding: 28px;
 }
 
@@ -298,7 +298,7 @@ h1 em {
 
 .section-kicker > .eyebrow {
   grid-column: 1 / -1;
-  color: var(--orange);
+  color: var(--accent);
   margin-bottom: 8px;
 }
 
@@ -411,7 +411,7 @@ h2 {
   width: 76px;
   height: 76px;
   margin-bottom: 25px;
-  color: var(--orange);
+  color: var(--accent);
   font-size: 30px;
   background:
     linear-gradient(currentColor, currentColor) top left / 17px 1px no-repeat,
@@ -441,13 +441,13 @@ h2 {
 }
 
 .camera-placeholder .primary {
-  background: var(--orange);
+  background: var(--accent);
   color: var(--ink);
   margin-top: 24px;
 }
 
 .camera-placeholder .primary:hover {
-  background: #ffa66b;
+  background: var(--accent);
 }
 
 .camera-footer {
@@ -473,7 +473,7 @@ h2 {
 }
 
 .text-button:hover {
-  color: #de6519;
+  color: var(--accent);
 }
 
 .live-badge {
@@ -575,7 +575,7 @@ h2 {
 
 .pose-instruction {
   margin-top: 10px;
-  color: #9b4109 !important;
+  color: var(--ink) !important;
 }
 
 .export-row {
@@ -597,9 +597,9 @@ h2 {
 }
 
 .secondary:hover:not(:disabled) {
-  background: var(--orange);
+  background: var(--accent);
   color: var(--ink);
-  border-color: var(--orange);
+  border-color: var(--accent);
 }
 
 .small-check, .layer-options label {
@@ -686,7 +686,7 @@ h2 {
 }
 
 .switch input:checked + span {
-  background: #bb500a;
+  background: var(--control-accent);
 }
 
 .switch input:checked + span::after {
@@ -694,7 +694,7 @@ h2 {
 }
 
 .switch input:focus-visible + span {
-  outline: 3px solid var(--orange);
+  outline: 3px solid var(--accent);
   outline-offset: 4px;
 }
 
@@ -730,7 +730,7 @@ h2 {
 
 .how-it-works > .eyebrow, .collection > .eyebrow,
 .release-faq > .eyebrow {
-  color: var(--orange);
+  color: var(--accent);
   margin-bottom: 22px;
 }
 
@@ -748,7 +748,7 @@ h2 {
 
 .how-it-works article > span {
   font-size: 12px;
-  color: var(--orange);
+  color: var(--accent);
 }
 
 .how-it-works article h3 {
@@ -836,7 +836,7 @@ h2 {
 }
 
 .calibration-panel .tongue-warning {
-  color: #ffbd87;
+  color: var(--muted);
   font-size: 12px;
 }
 
@@ -909,7 +909,7 @@ h2 {
 
 .track > div {
   height: 100%;
-  background: var(--orange);
+  background: var(--accent);
   transition: width 120ms;
 }
 
@@ -971,7 +971,7 @@ h2 {
 
 .catalog-message {
   margin: 12px 0 20px;
-  color: #ffb07a;
+  color: var(--accent);
 }
 
 .catalog-grid, .collection-grid {
@@ -1023,7 +1023,7 @@ h2 {
 }
 
 .upload-label:focus-within {
-  outline: 3px solid var(--orange);
+  outline: 3px solid var(--accent);
   outline-offset: 4px;
 }
 
@@ -1125,7 +1125,7 @@ h2 {
 }
 
 .notice {
-  color: #ffb987;
+  color: var(--paper);
   margin-top: 16px;
   font-size: 14px;
   line-height: 1.6;
@@ -1193,12 +1193,12 @@ footer .brand {
     margin-bottom: 35px;
   }
 
-  h1 {
+  .release-title {
     font-size: clamp(37px, 4.6vw, 52px);
     letter-spacing: -2.4px;
   }
 
-  h1 em {
+  .release-title em {
     letter-spacing: -2.8px;
   }
 
@@ -1301,13 +1301,13 @@ footer .brand {
     margin-bottom: 37px;
   }
 
-  h1 {
+  .release-title {
     font-size: clamp(38px, 7.8vw, 60px);
     line-height: 1.07;
     letter-spacing: -2.2px;
   }
 
-  h1 em {
+  .release-title em {
     letter-spacing: -2.6px;
   }
 
@@ -1517,12 +1517,12 @@ footer .brand {
     padding: 27px 21px 19px;
   }
 
-  h1 {
+  .release-title {
     font-size: 35px;
     letter-spacing: -1.7px;
   }
 
-  h1 em {
+  .release-title em {
     letter-spacing: -2px;
   }
 
@@ -1644,24 +1644,24 @@ footer .brand {
 .collection-preview { overflow: hidden; background: #22221f; }
 .collection-card .collection-preview { height: 255px; }
 .collection-card .collection-preview .cat-image { object-fit: cover; }
-.collection-card > small { margin: 18px 18px 0; display: block; color: #ff9a59; letter-spacing: 1px; font-size: 9px; }
-.brand-dot { color: var(--orange); }
+.collection-card > small { margin: 18px 18px 0; display: block; color: var(--accent); letter-spacing: 1px; font-size: 9px; }
+.brand-dot { color: var(--accent); }
 .tongue-calibration {
   margin: 8px 0 20px;
   padding: 24px;
-  border: 1px solid #565044;
+  border: 1px solid var(--line);
   border-radius: 16px;
-  background: #28261f;
+  background: #282825;
 }
 .tongue-calibration h3 { font-size: 19px; font-weight: 400; letter-spacing: -.5px; }
-.tongue-calibration p, .tongue-calibration small { font-size: 12px; line-height: 1.8; color: #c5bfb2; }
+.tongue-calibration p, .tongue-calibration small { font-size: 12px; line-height: 1.8; color: var(--muted); }
 .tongue-calibration .control-title { flex-wrap: wrap; justify-content: space-between; }
 .tongue-steps { list-style: none; padding: 0; margin: 22px 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.tongue-steps li { padding: 12px; border-bottom: 1px solid #565044; color: #bcb5a8; font-size: 11px; line-height: 1.5; }
-.tongue-steps li.current { color: #ffad75; border-color: var(--orange); }
+.tongue-steps li { padding: 12px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 11px; line-height: 1.5; }
+.tongue-steps li.current { color: var(--accent); border-color: var(--accent); }
 .tongue-steps li span { display: block; font-size: 22px; margin-bottom: 6px; }
 .tongue-calibration .calibration-actions { margin: 18px 0; }
-.tongue-calibration progress { width: 100%; accent-color: var(--orange); height: 8px; }
+.tongue-calibration progress { width: 100%; accent-color: var(--accent); height: 8px; }
 .tongue-calibration small { display: block; font-size: 10px; margin-top: 10px; }
 .advanced-settings > summary { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
 .advanced-settings > summary .ui-icon { width: 24px; height: 24px; }
@@ -1690,7 +1690,7 @@ footer > span { line-height: 1.8; }
   font-size: 12px;
   color: var(--muted);
 }
-.recognition-help .text-button { color: var(--orange); white-space: nowrap; }
+.recognition-help .text-button { color: var(--accent); white-space: nowrap; }
 @media (max-width: 600px) {
   .recognition-help { flex-direction: column; align-items: flex-start; gap: 10px; }
 }
@@ -1720,3 +1720,10 @@ footer > span { line-height: 1.8; }
 .hero-cat-footer > span { display: inline-flex; align-items: center; gap: .3em; }
 .hero-card-star.ui-icon { width: 34px; height: 34px; }
 .viewfinder > .ui-icon { width: 30px; height: 30px; }
+
+/* Palette shared by the camera page and /themes. */
+.switch span::after { background: var(--paper); }
+.hero-card-star { opacity: .7; }
+.export-row { padding-top: 24px; }
+.eyebrow { text-transform: none; letter-spacing: .15px; }
+.hero-copy .eyebrow, .hero-cat-heading, .hero-bottom { letter-spacing: .15px; }

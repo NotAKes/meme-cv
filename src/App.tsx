@@ -17,16 +17,16 @@ import { calibratedMemes, emptyCalibration, loadCalibration, medianFeatures, nor
 import './App.css'
 
 const defaultOverlay: OverlayOptions = { enabled: true, boxes: true, face: true, mesh: false, pose: true, hands: true }
-const featureLabels: Partial<Record<keyof Features, string>> = { mouthOpen: 'Рот', eyesOpen: 'Глаза', headDown: 'Голова вниз', headUp: 'Голова вверх', leftHandUp: 'Левая рука', rightHandUp: 'Правая рука', handsNearFace: 'Руки у лица', fist: 'Кулак', callMe: 'Жест 🤙', fingersTogether: 'Жест 👉👈', tongueOut: 'Язык / beta' }
+const featureLabels: Partial<Record<keyof Features, string>> = { mouthOpen: 'Рот', eyesOpen: 'Глаза', headDown: 'Голова вниз', headUp: 'Голова вверх', leftHandUp: 'Левая рука', rightHandUp: 'Правая рука', handsNearFace: 'Руки у лица', fist: 'Кулак', callMe: 'Жест 🤙', fingersTogether: 'Жест 👉👈', tongueOut: 'Язык' }
 type Status = 'idle' | 'loading' | 'running' | 'error'
 function tongueReasonLabel(reason: string) {
   const labels: Record<string, string> = {
     'not run': 'анализ ещё не запущен', 'face landmarks missing': 'не хватает точек лица',
-    'video unavailable': 'видеокадр недоступен', 'crop too small': 'область рта слишком мала. приблизьтесь к камере',
+    'video unavailable': 'видеокадр недоступен', 'crop too small': 'область рта слишком мала. подойди ближе',
     'canvas unavailable': 'не удалось прочитать пиксели камеры', 'insufficient lighting': 'недостаточное или слишком яркое освещение',
-    'mouth unobservable': 'область рта не видна достаточно чётко', 'invalid mouth geometry': 'не удалось определить контур рта',
-    'personal calibration unavailable or out of distribution': 'положение или свет отличаются от образцов. приблизься к исходной позе или повтори настройку',
-    'no tongue': 'анализ выполнен, язык не найден', 'tongue detected': 'найден цветовой признак языка (экспериментально)',
+    'mouth unobservable': 'область рта плохо видна', 'invalid mouth geometry': 'не удалось определить контур рта',
+    'personal calibration unavailable or out of distribution': 'положение или свет изменились. повтори настройку',
+    'no tongue': 'анализ выполнен, язык не найден', 'tongue detected': 'найден признак языка',
   }
   return labels[reason] ?? reason
 }
@@ -59,11 +59,11 @@ export default function App() {
   const calibrated = calibratedMemes(memes, calibration)
   function commitCalibration(next: typeof calibration) {
     setCalibration(next)
-    try { persistCalibration(next) } catch { setCalibrationMessage('Применено на эту сессию; браузер не разрешил сохранить настройки.') }
+    try { persistCalibration(next) } catch { setCalibrationMessage('Настройки действуют до закрытия страницы. Браузер не разрешил их сохранить.') }
   }
   function capturePose(id: string) {
     captureRef.current = { id, start: performance.now(), samples: [], handSamples: [] }
-    setCapturing(id); setCalibrationMessage('Удерживайте позу 3 секунды. Для нейтральной калибровки смотрите прямо, расслабьте лицо.')
+    setCapturing(id); setCalibrationMessage('Держи позу 3 секунды. При настройке лица смотри прямо и расслабь лицо.')
   }
   function processCapture(raw: Features, now: number, shapes: ReturnType<typeof import('./lib/cat-features').getHandShapeDiagnostics>) {
     const capture = captureRef.current
@@ -84,23 +84,23 @@ export default function App() {
     const meme = memes.find(m => m.id === capture.id)
     const handOnly = meme?.requiredFeatures?.some(key => ['fist', 'callMe', 'fingersTogether'].includes(key))
     if (capture.samples.length < 5 || (!handOnly && (target.eyesOpen === undefined || target.mouthOpen === undefined))) {
-      setCalibrationMessage('Недостаточно стабильных данных лица. Повторите при хорошем освещении.'); return
+      setCalibrationMessage('Не удалось записать лицо. Добавь свет и повтори.'); return
     }
     const current = optionsRef.current.calibration
     if (capture.id === 'fist-cat') {
       if (capture.handSamples.length < Math.max(5, capture.samples.length * .6)) {
-        setCalibrationMessage('Не удалось записать устойчивый кулак: покажите кисть целиком и согните четыре пальца. Текущий скор модели не важен.'); return
+        setCalibrationMessage('Не удалось записать кулак. Покажи кисть целиком и согни четыре пальца.'); return
       }
       const example = Array.from({ length: 5 }, (_, i) => capture.handSamples.map(v => v[i]).sort((a, b) => a - b)[Math.floor(capture.handSamples.length / 2)])
       const spread = capture.handSamples.reduce((sum, v) => sum + Math.sqrt(v.reduce((s, x, i) => s + (x - example[i]) ** 2, 0) / 5), 0) / capture.handSamples.length
-      if (spread > .14) { setCalibrationMessage('Поза сильно менялась во время записи. Повторите и удерживайте кулак неподвижно.'); return }
+      if (spread > .14) { setCalibrationMessage('Рука двигалась во время записи. Повтори, держа кулак неподвижно.'); return }
       commitCalibration({ ...current, fistExamples: [...(current.fistExamples ?? []), example].slice(-6), poses: { ...current.poses, [capture.id]: { ...target, fist: 1 } } })
-      setCalibrationMessage('Образец вашего кулака сохранён. Можно добавить другой ракурс той же кнопкой.'); return
+      setCalibrationMessage('Образец кулака сохранён. Можно записать ещё один ракурс.'); return
     }
     const missing = meme?.requiredFeatures?.find(key => (target[key] ?? 0) < (['fist', 'callMe', 'fingersTogether'].includes(key) ? .6 : .45))
-    if (missing) { setCalibrationMessage(`Не удалось уверенно увидеть признак «${featureLabels[missing] ?? missing}». Смотрите его сигнал ниже и попробуйте снова.`); return }
+    if (missing) { setCalibrationMessage(`Не удалось записать признак «${featureLabels[missing] ?? missing}». Попробуй ещё раз.`); return }
     commitCalibration(capture.id === 'neutral' ? { ...current, neutral: target } : { ...current, poses: { ...current.poses, [capture.id]: target } })
-    setCalibrationMessage(capture.id === 'neutral' ? 'Нейтральное лицо откалибровано.' : 'Ваша поза сохранена для этого кота.')
+    setCalibrationMessage(capture.id === 'neutral' ? 'Образец лица сохранён.' : 'Поза сохранена.')
   }
   const [imageUrls, setImageUrls] = useState<Record<string, string>>({})
   const urlsRef = useRef<Record<string, string>>({})
@@ -221,7 +221,7 @@ export default function App() {
   function fail(error: unknown) {
     release(); setCapturing(null); setStatus('error'); setFeatures({}); setRanking([]); setActiveId(null)
     const name = error instanceof Error ? error.name : ''
-    setMessage(name === 'NotAllowedError' ? 'Нет доступа к камере. Разрешите его в настройках браузера и попробуйте снова.' : name === 'NotFoundError' ? 'Камера не найдена. Подключите её и попробуйте снова.' : error instanceof Error ? error.message : 'Не удалось запустить трекинг.')
+    setMessage(name === 'NotAllowedError' ? 'Нет доступа к камере. Разреши его в настройках браузера.' : name === 'NotFoundError' ? 'Камера не найдена. Проверь подключение.' : error instanceof Error ? error.message : 'Не удалось запустить распознавание.')
   }
 
   async function saveCollage() {
@@ -244,49 +244,48 @@ export default function App() {
       ctx.fillStyle = '#e8edf4'; ctx.font = 'bold 24px sans-serif'; ctx.fillText('meme.cv', 650, 465)
       ctx.font = '16px monospace'; ctx.fillStyle = '#94a3b8'; ctx.fillText('meme.cv', 24, 530)
       const link = document.createElement('a'); link.download = `meme-cv-${Date.now()}.png`; link.href = canvas.toDataURL('image/png'); link.click()
-    } catch { setMessage('Не удалось сохранить коллаж. Попробуйте ещё раз.') }
+    } catch { setMessage('Не удалось сохранить коллаж. Попробуй ещё раз.') }
     finally { setSaving(false) }
   }
 
   const busy = status === 'loading'
   return <main>
     <a className="skip-link" href="#playground">Перейти к камере</a>
-    <header className="topbar"><a className="brand" href="#"><CatMark className="brand-mark" /><span>meme<span className="brand-dot">.</span>cv</span><span className="version">BETA</span></a><nav className="site-nav" aria-label="Навигация"><a href="#playground">Попробовать</a><a href="https://uprosti.tech">uprosti.tech <Icon name="arrow-up-right" /></a></nav></header>
+    <header className="topbar"><a className="brand" href="/"><CatMark className="brand-mark" /><span>meme<span className="brand-dot">.</span>cv</span></a><nav className="site-nav" aria-label="Навигация"><a href="#playground">Камера</a><a href="/themes">Оформление</a><a href="https://uprosti.tech">uprosti.tech <Icon name="arrow-up-right" /></a></nav></header>
     <ReleaseHero onStart={() => { void start(); document.getElementById('playground')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }) }} busy={busy} running={status === 'running'} />
-    <section className="section-kicker" id="playground"><div><span className="eyebrow">01 / ПОПРОБУЙ</span><h2>Камера</h2></div><p>Включи камеру и следуй инструкции.</p></section>
+    <section className="section-kicker" id="playground"><div><h2>Камера</h2></div><p>Покажи лицо и руки в кадре.</p></section>
     <div className="workspace">
-      <section className="panel camera-panel"><div className="panel-heading"><h2><span className="dot" /> Твоя камера</h2><span className="mono">{status === 'running' ? 'LIVE INPUT' : 'INPUT / OFF'}</span></div>
+      <section className="panel camera-panel"><div className="panel-heading"><h2><span className="dot" /> Твоя камера</h2><span className="mono">{cameraReady ? 'Включена' : busy ? 'Подключение' : 'Выключена'}</span></div>
         <div className="camera-stage">
           <video ref={videoRef} muted playsInline className={cameraReady ? 'visible' : ''} />
-          <canvas ref={canvasRef} className="cv-canvas" aria-label="CV-разметка лица и рук" />
+          <canvas ref={canvasRef} className="cv-canvas" aria-label="Разметка лица и рук" />
           {status !== 'running' && <div className={`camera-placeholder${cameraReady ? ' camera-loading' : ''}`}><div className="viewfinder"><Icon name="plus" /></div><h3>{busy ? 'Загрузка моделей' : status === 'error' ? 'Не получилось подключиться' : 'Камера выключена'}</h3><p role="status">{busy || status === 'error' ? message : 'Видео обрабатывается в браузере.'}</p>{!busy && <button className="primary" onClick={start}><Icon name="arrow-up-right" /> Включить камеру</button>}</div>}
-          {status === 'running' && <><span className="live-badge"><i /> LIVE</span><div className="camera-hud"><span>{metrics.face ? 'FACE DETECTED' : 'Лицо не найдено'} / HANDS {metrics.hands}</span><span>{metrics.fps} FPS / {metrics.ms} MS</span></div></>}
+          {status === 'running' && <><span className="live-badge"><i /> Камера включена</span><div className="camera-hud"><span>{metrics.face ? 'Лицо найдено' : 'Лицо не найдено'}. Рук в кадре: {metrics.hands}</span><span>{metrics.fps} кадров/с · {metrics.ms} мс</span></div></>}
         </div>
-        <div className="camera-footer"><span>{status === 'running' ? 'Один человек / лицо и руки в кадре' : 'Доступ к камере можно отключить в любой момент'}</span>{(busy || status === 'running') && <button className="text-button" onClick={stop}>{busy ? 'Отмена' : <><Icon name="stop" /> Остановить</>}</button>}</div>
+        <div className="camera-footer"><span>{status === 'running' ? 'Один человек в кадре' : 'Камера включается по кнопке'}</span>{(busy || status === 'running') && <button className="text-button" onClick={stop}>{busy ? 'Отмена' : <><Icon name="stop" /> Остановить</>}</button>}</div>
       </section>
-      <section className="panel result-panel"><div className="panel-heading"><h2>Результат</h2><span className="tag">8 КОТОМЕМОВ</span></div>
+      <section className="panel result-panel"><div className="panel-heading"><h2>Результат</h2></div>
         <div className="meme-display" ref={artRef}>{active ? <MemeArt meme={active} imageUrl={imageUrls[active.id]} /> : <div className="result-placeholder"><CatMark className="result-cat-mark" /><p>{status === 'running' ? 'Покажи мимику или жест' : 'Включи камеру'}</p></div>}</div>
-        <div className="result-description"><span className="eyebrow">{active ? 'СОВПАДЕНИЕ' : 'ОЖИДАЕМ ПОЗУ'}</span><p>{active ? '' : 'Подбор начнётся после загрузки моделей.'}</p>{active && <p className="pose-instruction">{active.instruction}</p>}</div>
         <div className="export-row"><button className="secondary" disabled={!active || saving || status !== 'running'} onClick={saveCollage}>{saving ? 'Сохраняем…' : <><Icon name="arrow-down" /> Сохранить коллаж</>}</button><label className="small-check"><input type="checkbox" checked={includeOverlay} onChange={e => setIncludeOverlay(e.target.checked)} /> С разметкой</label></div>
       </section>
     </div>
-    <section className="panel controls"><div className="control-group"><div className="control-title"><h2>CV Overlay</h2><label className="switch"><input aria-label="Показать CV-разметку" type="checkbox" checked={overlay.enabled} onChange={e => setOverlay({ ...overlay, enabled: e.target.checked })} /><span /></label></div><p>Разметка поверх видео</p><div className="layer-options">{([['boxes', 'Рамки'], ['face', 'Мимика'], ['pose', 'Руки'], ['hands', 'Пальцы'], ['mesh', 'Сетка лица']] as const).map(([key, label]) => <label key={key}><input type="checkbox" disabled={!overlay.enabled} checked={overlay[key]} onChange={e => setOverlay({ ...overlay, [key]: e.target.checked })} />{label}</label>)}</div></div><div className="control-group"><h2>Что сравниваем?</h2><p>Лицо, руки или оба варианта</p><div className="segmented" role="group" aria-label="Режим сравнения">{([['combined', 'Вместе'], ['face', 'Мимика'], ['pose', 'Поза']] as const).map(([value, label]) => <button key={value} aria-pressed={mode === value} className={mode === value ? 'selected' : ''} onClick={() => setMode(value)}>{label}</button>)}</div></div></section>
+    <section className="panel controls"><div className="control-group"><div className="control-title"><h2>Разметка</h2><label className="switch"><input aria-label="Показать CV-разметку" type="checkbox" checked={overlay.enabled} onChange={e => setOverlay({ ...overlay, enabled: e.target.checked })} /><span /></label></div><p>Выбери, что показать поверх видео.</p><div className="layer-options">{([['boxes', 'Рамки'], ['face', 'Мимика'], ['pose', 'Руки'], ['hands', 'Пальцы'], ['mesh', 'Сетка лица']] as const).map(([key, label]) => <label key={key}><input type="checkbox" disabled={!overlay.enabled} checked={overlay[key]} onChange={e => setOverlay({ ...overlay, [key]: e.target.checked })} />{label}</label>)}</div></div><div className="control-group"><h2>Сравнение</h2><p>По лицу, рукам или вместе.</p><div className="segmented" role="group" aria-label="Режим сравнения">{([['combined', 'Вместе'], ['face', 'Мимика'], ['pose', 'Поза']] as const).map(([value, label]) => <button key={value} aria-pressed={mode === value} className={mode === value ? 'selected' : ''} onClick={() => setMode(value)}>{label}</button>)}</div></div></section>
     {message && status === 'running' && <p role="status" className="notice">{message.startsWith('Не удалось') ? message : ''}</p>}
-    <div className="recognition-help"><p>Настройки распознавания</p><button className="text-button" onClick={() => { setAdvancedOpen(true); document.getElementById('recognition-settings')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }) }}>Открыть настройки <Icon name="arrow-up-right" /></button></div>
+    <div className="recognition-help"><button className="text-button" onClick={() => { setAdvancedOpen(true); document.getElementById('recognition-settings')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }) }}>Открыть настройки <Icon name="arrow-up-right" /></button></div>
     <details className="advanced-settings" open={advancedOpen} onToggle={e => setAdvancedOpen(e.currentTarget.open)} id="recognition-settings"><summary>Настройки <Icon name="plus" /></summary>
     <section className="panel calibration-panel" aria-label="Калибровка распознавания">
-      <div><h2>Настроить под себя</h2><p>Калибровка необязательна. Здесь можно настроить лицо и язык.</p></div>
+      <div><h2>Калибровка</h2><p>Можно пропустить. Нужна, если распознавание ошибается.</p></div>
       <div className="calibration-actions"><button className="secondary" disabled={status !== 'running' || capturing !== null || tongueCapturing} onClick={() => capturePose('neutral')}>{capturing === 'neutral' ? 'Удерживайте 3 секунды…' : calibration.neutral ? 'Повторить калибровку лица' : 'Калибровать лицо'}</button><button className="text-button" disabled={capturing !== null || tongueCapturing} onClick={() => { commitCalibration(emptyCalibration()); setCalibrationMessage('Калибровка сброшена.') }}>Сбросить настройки</button></div>
       <p aria-live="polite">{calibrationMessage}</p>
       <TongueCalibration ref={tongueCalibrationRef} enabled={status === 'running' && capturing === null} profile={calibration.tongueProfile} onBusy={setTongueCapturing} onProfile={profile => commitCalibration({ ...optionsRef.current.calibration, tongueProfile: profile })} />
-      <div className="recognition-diagnostics" aria-label="Диагностика жестов и языка"><div><canvas ref={mouthRef} width={256} height={160} aria-label="Область анализа языка" /><span>Область анализа языка / только локальный просмотр</span></div><div><p><strong>Кисти:</strong> {status !== 'running' ? 'камера выключена' : diagnostics.hands ? `обнаружено ${diagnostics.hands}` : 'не найдены. покажите кисть целиком, включая запястье'}</p><p><strong>Язык:</strong> {tongueReasonLabel(diagnostics.tongueReason)} / {diagnostics.tongueSource === 'personal' ? 'персональная настройка' : diagnostics.tongueSource === 'heuristic' ? 'базовая эвристика' : 'нет наблюдения'}</p><p>0: признак не найден. Нет данных: область не видна.</p>
-        {diagnostics.decisions.map(hand => <p key={hand.handIndex}><strong>Кисть {hand.handIndex + 1} / модель:</strong> {hand.modelLabel} / {hand.modelScore.toFixed(2)}; кулак модели: {hand.modelFist.toFixed(2)}; геометрия: {hand.geometryFist.toFixed(2)}; мой образец: {hand.personalFist.toFixed(2)}; итог кулака: {hand.fist.toFixed(2)} ({hand.fistSource}); 🤙: {hand.callMe.toFixed(2)}</p>)}
+      <div className="recognition-diagnostics" aria-label="Диагностика жестов и языка"><div><canvas ref={mouthRef} width={256} height={160} aria-label="Область анализа языка" /><span>Область рта. Видна только тебе.</span></div><div><p><strong>Кисти:</strong> {status !== 'running' ? 'камера выключена' : diagnostics.hands ? `обнаружено ${diagnostics.hands}` : 'не найдены. покажи кисть целиком'}</p><p><strong>Язык:</strong> {tongueReasonLabel(diagnostics.tongueReason)}. {diagnostics.tongueSource === 'personal' ? 'персональная настройка' : diagnostics.tongueSource === 'heuristic' ? 'базовая эвристика' : 'нет наблюдения'}</p><p>0: признак не найден. Нет данных: область не видна.</p>
+        {diagnostics.decisions.map(hand => <p key={hand.handIndex}><strong>Кисть {hand.handIndex + 1}, модель:</strong> {hand.modelLabel} / {hand.modelScore.toFixed(2)}; кулак модели: {hand.modelFist.toFixed(2)}; геометрия: {hand.geometryFist.toFixed(2)}; мой образец: {hand.personalFist.toFixed(2)}; итог кулака: {hand.fist.toFixed(2)} ({hand.fistSource}); 🤙: {hand.callMe.toFixed(2)}</p>)}
         {!!diagnostics.shapes.length && <details className="finger-diagnostics"><summary>Положение пальцев</summary>{diagnostics.shapes.map(hand => <p key={hand.handIndex}>Кисть {hand.handIndex + 1}: большой палец отведён {hand.thumbSpread?.toFixed(2) ?? 'нет данных'}; мизинец выпрямлен {hand.pinkyExtended?.toFixed(2) ?? 'нет данных'}; указательный выпрямлен {hand.indexExtended?.toFixed(2) ?? 'нет данных'}; средний {hand.middleExtended?.toFixed(2) ?? 'нет данных'}; безымянный {hand.ringExtended?.toFixed(2) ?? 'нет данных'}</p>)}</details>}
-        <p>Жест 🤙 определяется по руке.</p></div></div>
-      <p className="tongue-warning">Распознавание языка экспериментальное. Точность зависит от освещения и калибровки.</p>
+        </div></div>
+      <p className="tongue-warning">Распознавание языка экспериментальное и может ошибаться. При смене света настройку можно повторить.</p>
     </section>
-    <section className="details-grid"><div><div className="section-heading"><h2>Ещё похожи</h2><span className="mono">TOP CANDIDATES</span></div><div className="alternatives">{(ranking.length ? ranking.filter(r => r.meme.id !== activeId).slice(0, 3).map(r => r.meme) : memes.slice(0, 3)).map(meme => <article className="mini-meme" key={meme.id}><MemeArt meme={meme} imageUrl={imageUrls[meme.id]} /></article>)}</div></div><div className="signals"><div className="section-heading"><h2>Сигналы</h2><span className="mono">NORMALIZED / 0–1</span></div>{Object.entries(featureLabels).map(([key, label]) => { const value = features[key as keyof Features]; return <div className="signal" key={key}><span>{label}</span><div className="track"><div style={{ width: `${(value ?? 0) * 100}%` }} /></div><code>{value === undefined ? 'нет данных' : value.toFixed(2)}</code></div> })}</div></section>
+    <section className="details-grid"><div><div className="section-heading"><h2>Другие варианты</h2></div><div className="alternatives">{(ranking.length ? ranking.filter(r => r.meme.id !== activeId).slice(0, 3).map(r => r.meme) : memes.slice(0, 3)).map(meme => <article className="mini-meme" key={meme.id}><MemeArt meme={meme} imageUrl={imageUrls[meme.id]} /></article>)}</div></div><div className="signals"><div className="section-heading"><h2>Сигналы</h2><span className="mono">От 0 до 1</span></div>{Object.entries(featureLabels).map(([key, label]) => { const value = features[key as keyof Features]; return <div className="signal" key={key}><span>{label}</span><div className="track"><div style={{ width: `${(value ?? 0) * 100}%` }} /></div><code>{value === undefined ? 'нет данных' : value.toFixed(2)}</code></div> })}</div></section>
     </details>
-    <footer><a className="brand" href="#"><CatMark className="brand-mark" />meme.cv</a><span>Проект uprosti.tech.<br />Бета-версия / локальная обработка / 2026</span><a href="#playground">Вернуться к камере <Icon name="arrow-up-right" /></a></footer>
+    <footer><a href="https://uprosti.tech">uprosti.tech</a><span>2026</span><a href="#playground">К камере <Icon name="arrow-up-right" /></a></footer>
   </main>
 }

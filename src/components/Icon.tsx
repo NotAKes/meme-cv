@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react'
 
-type IconName = 'arrow-up-right' | 'arrow-down' | 'arrow-right' | 'asterisk' | 'plus' | 'stop'
+type IconName = 'arrow-up-right' | 'arrow-down' | 'arrow-right' | 'asterisk' | 'plus' | 'check' | 'stop'
 type IconProps = Omit<SVGProps<SVGSVGElement>, 'name'> & { name: IconName }
 
 const paths: Record<Exclude<IconName, 'stop'>, string> = {
@@ -9,6 +9,7 @@ const paths: Record<Exclude<IconName, 'stop'>, string> = {
   'arrow-right': 'M3 12h18m-7-7 7 7-7 7',
   asterisk: 'M12 2v20M2 12h20M5 5l14 14M5 19 19 5',
   plus: 'M12 4v16M4 12h16',
+  check: 'm5 12 4 4L19 6',
 }
 
 /** Paths, not Unicode glyphs: iOS cannot substitute a color emoji font. */

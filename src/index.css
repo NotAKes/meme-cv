@@ -1,7 +1,7 @@
 :root {
   font-family: Arial, Helvetica, sans-serif;
-  color: #f3f2ee;
-  background: #181816;
+  color: var(--paper);
+  background: var(--ink);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -10,7 +10,8 @@
   color-scheme: dark;
   --paper: #f3f2ee;
   --ink: #181816;
-  --orange: #ff893d;
+  --accent: #d8d8d2;
+  --control-accent: color-mix(in srgb, var(--accent) 48%, #181816);
   --muted: #b5b5ad;
   --line: #42423c;
 }
@@ -55,7 +56,7 @@ button:disabled {
 }
 
 :focus-visible {
-  outline: 3px solid var(--orange);
+  outline: 3px solid var(--accent);
   outline-offset: 5px;
 }
 
@@ -69,7 +70,7 @@ h1, h2, h3, p {
 }
 
 input {
-  accent-color: #c4540b;
+  accent-color: var(--control-accent);
 }
 
 input[type='checkbox'] {
@@ -79,7 +80,7 @@ input[type='checkbox'] {
 }
 
 ::selection {
-  background: var(--orange);
+  background: var(--accent);
   color: var(--ink);
 }
 
