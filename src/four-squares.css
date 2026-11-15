@@ -43,7 +43,6 @@ main *, main *::before, main *::after { border-radius: 0; }
 .hero-cat-art { flex: 1; height: auto; min-height: 0; }
 .hero-cat-scene { width: min(100%, 560px); height: auto; max-height: 100%; }
 .camera-panel { background: var(--ink); }
-.result-panel { border-top: 1px solid var(--ink); }
 .panel-heading { min-height: 44px; padding: 0; flex: 0 0 auto; }
 .panel-heading h2 { font-size: 21px; font-weight: 400; letter-spacing: -.5px; }
 .camera-stage, .meme-display { flex: 1; min-height: 0; min-width: 0; aspect-ratio: auto; margin: 0; max-height: none; background: transparent; }
