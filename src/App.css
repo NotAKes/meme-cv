@@ -241,10 +241,40 @@ main > *, .workspace > *, .details-grid > *, .control-group,
   min-height: 300px;
 }
 
-.hero-cat-svg {
+.hero-cat-scene {
   display: block;
   width: min(100%, 360px);
   aspect-ratio: 1;
+}
+
+/* Keep the original 24-unit cat independent from its airy CV frame. */
+.hero-cat-body {
+  transform-box: view-box;
+  transform-origin: 12px 17px;
+  animation: hero-cat-breathe 5.6s ease-in-out infinite;
+}
+
+.hero-cat-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hero-cat-blink 8.4s ease-in-out infinite;
+}
+
+@keyframes hero-cat-breathe {
+  0%, 100% { transform: translateY(.12px) rotate(-1deg) scale(1); }
+  50% { transform: translateY(-.16px) rotate(1deg) scale(1.012); }
+}
+
+@keyframes hero-cat-blink {
+  0%, 43%, 47%, 100% { transform: scaleY(1); }
+  45% { transform: scaleY(.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cat-body, .hero-cat-eyes {
+    animation: none;
+    transform: none;
+  }
 }
 
 .hero-cat-footer {
@@ -1308,7 +1338,7 @@ footer .brand {
     flex: none;
   }
 
-  .hero-cat-svg {
+  .hero-cat-scene {
     width: auto;
     height: 100%;
     max-width: 100%;
