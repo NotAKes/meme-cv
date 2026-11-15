@@ -7,7 +7,9 @@ Computer vision in the browser: match facial expressions and hand gestures to ca
 
 **[Открыть демо](https://meme-cv.uprosti.tech)** · [Пайплайн подробно](docs/PIPELINE.md) · [Развёртывание](docs/DEPLOYMENT.md)
 
-![Интерфейс meme.cv](docs/images/preview.png)
+![Интерфейс meme.cv: четыре квадрата без зазоров](docs/images/preview.png)
+
+Адаптивная композиция: четыре равных квадрата на desktop, одна колонка на мобильном; ниже прямоугольные блоки разметки, сравнения и необязательных настроек. [Мобильный вид](docs/images/four-squares-mobile.png) · [Открытые настройки](docs/images/four-squares-desktop-settings.png).
 
 ## Что это
 

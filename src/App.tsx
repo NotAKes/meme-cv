@@ -15,6 +15,7 @@ import { MemeArt } from './components/MemeArt'
 import { loadImages } from './lib/image-store'
 import { calibratedMemes, emptyCalibration, loadCalibration, medianFeatures, normalizeFace, persistCalibration } from './lib/calibration'
 import './App.css'
+import './four-squares.css'
 
 const defaultOverlay: OverlayOptions = { enabled: true, boxes: true, face: true, mesh: false, pose: true, hands: true }
 const featureLabels: Partial<Record<keyof Features, string>> = { mouthOpen: 'Рот', eyesOpen: 'Глаза', headDown: 'Голова вниз', headUp: 'Голова вверх', leftHandUp: 'Левая рука', rightHandUp: 'Правая рука', handsNearFace: 'Руки у лица', fist: 'Кулак', callMe: 'Жест 🤙', fingersTogether: 'Жест 👉👈', tongueOut: 'Язык' }
@@ -251,10 +252,8 @@ export default function App() {
   const busy = status === 'loading'
   return <main>
     <a className="skip-link" href="#playground">Перейти к камере</a>
-    <header className="topbar"><a className="brand" href="/"><CatMark className="brand-mark" /><span>meme<span className="brand-dot">.</span>cv</span></a><nav className="site-nav" aria-label="Навигация"><a href="#playground">Камера</a><a href="https://uprosti.tech">uprosti.tech <Icon name="arrow-up-right" /></a></nav></header>
     <ReleaseHero onStart={() => { void start(); document.getElementById('playground')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }) }} busy={busy} running={status === 'running'} />
-    <section className="section-kicker" id="playground"><div><h2>Камера</h2><p>Покажи лицо и руки в кадре.</p></div></section>
-    <div className="workspace">
+    <div className="workspace" id="playground">
       <section className="panel camera-panel"><div className="panel-heading"><h2><span className="dot" /> Твоя камера</h2><span className="mono">{cameraReady ? 'Включена' : busy ? 'Подключение' : 'Выключена'}</span></div>
         <div className="camera-stage">
           <video ref={videoRef} muted playsInline className={cameraReady ? 'visible' : ''} />

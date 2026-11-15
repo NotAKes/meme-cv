@@ -24,7 +24,7 @@ test('camera permission denial has an actionable error', async ({ page }) => {
 })
 
 test('real MediaPipe models initialize and process synthetic camera frames', async ({ browser }) => {
-  const context = await browser.newContext({ permissions: ['camera'] })
+  const context = await browser.newContext({ permissions: ['camera'], viewport: { width: 1024, height: 1100 } })
   const page = await context.newPage()
   const errors: string[] = []
   page.on('pageerror', e => errors.push(e.message))
@@ -46,6 +46,20 @@ test('real MediaPipe models initialize and process synthetic camera frames', asy
   await expect(page.locator('.camera-hud')).toContainText('Лицо не найдено', { timeout: 20000 })
   await expect(page.locator('.camera-hud')).toContainText(/[1-9]\d* мс/, { timeout: 20000 })
   await expect(page.locator('.cv-canvas')).toHaveAttribute('width', '640')
+  const mediaGeometry = await page.evaluate(() => {
+    const selectors = ['.hero-copy', '.hero-cat-card', '.camera-panel', '.result-panel']
+    return {
+      squares: selectors.map(selector => { const b = document.querySelector(selector)!.getBoundingClientRect(); return [b.width, b.height] }),
+      media: ['video', '.cv-canvas'].map(selector => { const b = document.querySelector(selector)!.getBoundingClientRect(); return [b.x, b.y, b.width, b.height] }),
+    }
+  })
+  for (const [width, height] of mediaGeometry.squares) {
+    expect(Math.abs(width - 512)).toBeLessThanOrEqual(1)
+    expect(Math.abs(height - 512)).toBeLessThanOrEqual(1)
+  }
+  expect(mediaGeometry.media[0]).toEqual(mediaGeometry.media[1])
+  await expect(page.locator('video')).toHaveCSS('object-fit', 'contain')
+  await expect(page.locator('.cv-canvas')).toHaveCSS('object-fit', 'contain')
   await page.getByRole('checkbox', { name: 'Показать CV-разметку' }).uncheck()
   await page.getByRole('button', { name: 'Остановить' }).click()
   await expect(page.getByRole('button', { name: 'Включить камеру' })).toBeVisible()

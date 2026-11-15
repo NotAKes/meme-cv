@@ -45,7 +45,7 @@ test('mint styling ignores legacy palette settings and preserves calibration', a
   })
   await page.goto('/')
   await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(120, 221, 179)')
-  await expect(page.locator('.brand-mark')).toHaveCSS('color', 'rgb(120, 221, 179)')
+  await expect(page.locator('.brand-mark')).toHaveCSS('color', 'rgb(24, 24, 22)')
   await expect(page.getByRole('link', { name: 'Оформление', exact: true })).toHaveCount(0)
   await page.reload()
   await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(120, 221, 179)')
