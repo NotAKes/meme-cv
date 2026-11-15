@@ -5,6 +5,12 @@ export const themes = [
   { id: 'lilac', name: 'Сиреневый', accent: '#c8bbd5' },
   { id: 'sand', name: 'Песочный', accent: '#d8c7a7' },
   { id: 'rose', name: 'Пыльная роза', accent: '#d5b6b6' },
+  { id: 'lime', name: 'Лайм', accent: '#c3f34a' },
+  { id: 'yellow', name: 'Жёлтый', accent: '#f4da49' },
+  { id: 'turquoise', name: 'Бирюзовый', accent: '#43d9cf' },
+  { id: 'pink', name: 'Розовый', accent: '#f18ac2' },
+  { id: 'electric-blue', name: 'Синий', accent: '#8da9ff' },
+  { id: 'mint', name: 'Мятный', accent: '#67e3ac' },
 ] as const
 
 export type ThemeId = typeof themes[number]['id']

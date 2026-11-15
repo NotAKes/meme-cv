@@ -19,7 +19,7 @@ test('theme page changes the homepage palette, persists selection, and resets wi
   await page.getByRole('link', { name: 'Оформление', exact: true }).click()
   await expect(page).toHaveURL(/\/themes$/)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Оформление')
-  await expect(page.getByRole('radio')).toHaveCount(6)
+  await expect(page.getByRole('radio')).toHaveCount(12)
   await page.getByRole('radio', { name: 'Шалфей', exact: false }).check()
   await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(186, 201, 174)')
   expect(await page.evaluate(key => localStorage.getItem(key), storageKey)).toBe('sage')
@@ -68,4 +68,25 @@ test('theme selection still applies when local storage is blocked', async ({ pag
   await page.getByRole('radio', { name: 'Голубой', exact: false }).check()
   await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(181, 201, 218)')
   await expect(page.getByRole('status')).toContainText('Браузер не разрешил сохранить выбор')
+})
+
+
+test('bright palettes apply to the preview and persist on the homepage', async ({ page }) => {
+  await page.goto('/themes')
+  const palettes = [
+    ['Лайм', 'lime', 'rgb(195, 243, 74)'],
+    ['Жёлтый', 'yellow', 'rgb(244, 218, 73)'],
+    ['Бирюзовый', 'turquoise', 'rgb(67, 217, 207)'],
+    ['Розовый', 'pink', 'rgb(241, 138, 194)'],
+    ['Синий', 'electric-blue', 'rgb(141, 169, 255)'],
+    ['Мятный', 'mint', 'rgb(103, 227, 172)'],
+  ]
+  for (const [name, id, color] of palettes) {
+    await page.getByRole('radio', { name: new RegExp(`^${name} `) }).check()
+    await expect(page.locator('html')).toHaveAttribute('data-theme', id)
+    await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', color)
+  }
+  await page.getByRole('link', { name: 'Камера', exact: true }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'mint')
+  await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(103, 227, 172)')
 })
