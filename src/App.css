@@ -226,43 +226,25 @@ main > *, .workspace > *, .details-grid > *, .control-group,
   padding: 28px;
 }
 
-.hero-cat-heading, .hero-cat-footer {
+.hero-cat-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
 }
 
-.hero-cat-heading {
-  font-size: 11px;
-  letter-spacing: 1px;
-}
-
-.hero-card-star {
-  width: 34px;
-  height: 34px;
-}
-
 .hero-cat-art {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex: 1;
-  margin: 0 -22px;
+  min-height: 300px;
 }
 
 .hero-cat-svg {
   display: block;
-  width: 100%;
-  overflow: visible;
-}
-
-.hero-cat-face {
-  transform-origin: 230px 235px;
-  animation: cat-sway 7s ease-in-out infinite;
-}
-
-.cat-pupils {
-  animation: cat-look 9s ease-in-out infinite;
+  width: min(100%, 360px);
+  aspect-ratio: 1;
 }
 
 .hero-cat-footer {
@@ -277,15 +259,7 @@ main > *, .workspace > *, .details-grid > *, .control-group,
   height: 32px;
 }
 
-@keyframes cat-sway {
-  0%, 100% { transform: rotate(-3deg); }
-  50% { transform: rotate(3deg); }
-}
 
-@keyframes cat-look {
-  0%, 20%, 80%, 100% { transform: translateX(0); }
-  40%, 60% { transform: translateX(7px); }
-}
 
 .section-kicker {
   display: grid;
@@ -1330,6 +1304,7 @@ footer .brand {
   .hero-cat-art {
     justify-content: center;
     height: 280px;
+    min-height: 0;
     flex: none;
   }
 
@@ -1540,10 +1515,6 @@ footer .brand {
     height: 245px;
   }
 
-  .hero-cat-heading {
-    font-size: 10px;
-  }
-
   .hero-smallprint {
     max-width: none;
   }
@@ -1718,12 +1689,10 @@ footer > span { line-height: 1.8; }
   margin-left: .25em;
 }
 .hero-cat-footer > span { display: inline-flex; align-items: center; gap: .3em; }
-.hero-card-star.ui-icon { width: 34px; height: 34px; }
 .viewfinder > .ui-icon { width: 30px; height: 30px; }
 
 /* Shared mint accent. */
 .switch span::after { background: var(--paper); }
-.hero-card-star { opacity: .7; }
 .export-row { padding-top: 24px; }
 .eyebrow { text-transform: none; letter-spacing: .15px; }
-.hero-copy .eyebrow, .hero-cat-heading, .hero-bottom { letter-spacing: .15px; }
+.hero-copy .eyebrow, .hero-bottom { letter-spacing: .15px; }
