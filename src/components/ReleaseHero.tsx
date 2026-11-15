@@ -20,7 +20,7 @@ export function ReleaseHero({ onStart, busy, running }: ReleaseHeroProps) {
             <a className="primary hero-cta" href="#playground">Камера <Icon name="arrow-up-right" /></a>
           ) : (
             <button className="primary hero-cta" onClick={onStart} disabled={busy}>
-              {busy ? 'Загрузка…' : 'Начать'} <Icon name="arrow-up-right" />
+              {busy ? 'Загрузка…' : 'Начать'} <Icon name="arrow-down" />
             </button>
           )}
           <span className="hero-smallprint">Видео остаётся в браузере.</span>

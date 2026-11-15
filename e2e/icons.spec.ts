@@ -6,7 +6,7 @@ test('iPhone UI uses SVG paths instead of emoji-capable decoration', async ({ pa
   await page.goto('/')
   const cta = page.getByRole('button', { name: 'Начать', exact: true })
   await expect(cta).toBeVisible()
-  await expect(cta.locator('svg[data-icon="arrow-up-right"]')).toHaveAttribute('aria-hidden', 'true')
+  await expect(cta.locator('svg[data-icon="arrow-down"]')).toHaveAttribute('aria-hidden', 'true')
   await expect(page.locator('[data-cat-geometry] path')).toHaveCount(8)
   const catBody = page.locator('[data-cat-geometry] path').first()
   await expect(catBody).not.toHaveAttribute('opacity')
