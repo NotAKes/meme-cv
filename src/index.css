@@ -10,7 +10,7 @@
   color-scheme: dark;
   --paper: #f3f2ee;
   --ink: #181816;
-  --accent: #43d9cf;
+  --accent: #b9e6cf;
   --control-accent: color-mix(in srgb, var(--accent) 48%, #181816);
   --muted: #b5b5ad;
   --line: #42423c;

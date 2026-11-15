@@ -1,7 +1,7 @@
 # meme.cv
 
 [![CI](https://github.com/NotAKes/meme-cv/actions/workflows/ci.yml/badge.svg)](https://github.com/NotAKes/meme-cv/actions/workflows/ci.yml)
-[![Demo](https://img.shields.io/badge/demo-meme--cv.uprosti.tech-43d9cf)](https://meme-cv.uprosti.tech)
+[![Demo](https://img.shields.io/badge/demo-meme--cv.uprosti.tech-b9e6cf)](https://meme-cv.uprosti.tech)
 
 Computer vision in the browser: match facial expressions and hand gestures to cat memes in real time. Built with TypeScript, MediaPipe and Canvas. Inference runs on the device; camera frames are not uploaded.
 
@@ -83,7 +83,7 @@ npm run dev
 - Переключаемый CV Overlay: рамки, контуры лица, скелет рук, пальцы, сетка лица.
 - PNG-коллаж из кадра камеры и выбранной картинки, с разметкой или без неё.
 - Адаптивный интерфейс, клавиатурный фокус, reduced motion.
-- Графитовый фон и бирюзовый акцент на всех экранах.
+- Графитовый фон и светло-мятный акцент на всех экранах.
 - Локальная обработка и сохранение числовой калибровки.
 
 ## Проверки
