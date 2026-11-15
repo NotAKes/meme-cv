@@ -24,17 +24,17 @@ test('iPhone UI uses SVG paths instead of emoji-capable decoration', async ({ pa
   await page.screenshot({ path: 'test-results/iphone-icons.png', fullPage: true })
 })
 
-test('lime styling ignores legacy palette settings and preserves calibration', async ({ page }) => {
+test('turquoise styling ignores legacy palette settings and preserves calibration', async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem('meme-cv-theme-v1', 'rose')
     localStorage.setItem('meme-cv-calibration-v1', JSON.stringify({ poses: {}, neutral: { eyesOpen: .7 } }))
   })
   await page.goto('/')
-  await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(195, 243, 74)')
-  await expect(page.locator('.brand-mark')).toHaveCSS('color', 'rgb(195, 243, 74)')
+  await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(67, 217, 207)')
+  await expect(page.locator('.brand-mark')).toHaveCSS('color', 'rgb(67, 217, 207)')
   await expect(page.getByRole('link', { name: 'Оформление', exact: true })).toHaveCount(0)
   await page.reload()
-  await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(195, 243, 74)')
+  await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(67, 217, 207)')
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('meme-cv-calibration-v1')!).neutral.eyesOpen)).toBe(.7)
 })
 
@@ -44,6 +44,6 @@ test('retired theme preview URLs lead to the homepage', async ({ page }) => {
     await expect(page).toHaveURL(/\/$/)
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('meme.cv')
     await expect(page.getByRole('radio')).toHaveCount(0)
-    await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(195, 243, 74)')
+    await expect(page.locator('.hero-cat-card')).toHaveCSS('background-color', 'rgb(67, 217, 207)')
   }
 })

@@ -1721,7 +1721,7 @@ footer > span { line-height: 1.8; }
 .hero-card-star.ui-icon { width: 34px; height: 34px; }
 .viewfinder > .ui-icon { width: 30px; height: 30px; }
 
-/* Shared lime accent. */
+/* Shared turquoise accent. */
 .switch span::after { background: var(--paper); }
 .hero-card-star { opacity: .7; }
 .export-row { padding-top: 24px; }
