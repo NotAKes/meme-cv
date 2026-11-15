@@ -190,10 +190,10 @@ h1 em {
   padding: 15px 22px;
 }
 
-.hero-cta > span {
+.hero-cta > .ui-icon {
   margin-left: 15px;
-  font-size: 23px;
-  font-weight: 400;
+  width: 23px;
+  height: 23px;
 }
 
 .hero-smallprint {
@@ -214,8 +214,9 @@ h1 em {
   letter-spacing: 1px;
 }
 
-.hero-bottom > :last-child {
-  font-size: 22px;
+.hero-bottom > .ui-icon {
+  width: 22px;
+  height: 22px;
 }
 
 .hero-cat-card {
@@ -238,8 +239,8 @@ h1 em {
 }
 
 .hero-card-star {
-  font-size: 34px;
-  line-height: 1;
+  width: 34px;
+  height: 34px;
 }
 
 .hero-cat-art {
@@ -271,8 +272,9 @@ h1 em {
   letter-spacing: -.5px;
 }
 
-.hero-cat-footer > :last-child {
-  font-size: 32px;
+.hero-cat-footer > .ui-icon {
+  width: 32px;
+  height: 32px;
 }
 
 @keyframes cat-sway {
@@ -1662,8 +1664,8 @@ footer .brand {
 .tongue-calibration progress { width: 100%; accent-color: var(--orange); height: 8px; }
 .tongue-calibration small { display: block; font-size: 10px; margin-top: 10px; }
 .advanced-settings > summary { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
-.advanced-settings > summary span { font-size: 24px; font-weight: 300; }
-.advanced-settings[open] > summary span { transform: rotate(45deg); }
+.advanced-settings > summary .ui-icon { width: 24px; height: 24px; }
+.advanced-settings[open] > summary .ui-icon { transform: rotate(45deg); }
 footer > span { line-height: 1.8; }
 @media (max-width: 800px) {
   .collection-card .collection-preview { height: 220px; }
@@ -1703,3 +1705,18 @@ footer > span { line-height: 1.8; }
 .camera-loading .viewfinder { display: none; }
 .camera-loading h3 { margin: 0; font-size: 16px; }
 .camera-loading p { margin: 6px 0 0; }
+
+/* UI symbols are SVG paths; actual gesture emoji remain text intentionally. */
+.ui-icon {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  flex: 0 0 auto;
+  vertical-align: -.2em;
+}
+.site-nav .ui-icon, footer > a > .ui-icon, .text-button > .ui-icon {
+  margin-left: .25em;
+}
+.hero-cat-footer > span { display: inline-flex; align-items: center; gap: .3em; }
+.hero-card-star.ui-icon { width: 34px; height: 34px; }
+.viewfinder > .ui-icon { width: 30px; height: 30px; }

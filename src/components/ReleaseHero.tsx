@@ -1,3 +1,5 @@
+import { Icon } from './Icon'
+
 type ReleaseHeroProps = {
   onStart: () => void
   busy: boolean
@@ -14,18 +16,18 @@ export function ReleaseHero({ onStart, busy, running }: ReleaseHeroProps) {
         <p className="hero-description">Подбор котомемов по лицу и жестам.</p>
         <div className="hero-action-row">
           {running ? (
-            <a className="primary hero-cta" href="#playground">Камера <span aria-hidden="true">↗</span></a>
+            <a className="primary hero-cta" href="#playground">Камера <Icon name="arrow-up-right" /></a>
           ) : (
             <button className="primary hero-cta" onClick={onStart} disabled={busy}>
-              {busy ? 'Загрузка…' : 'Начать'} <span aria-hidden="true">↗</span>
+              {busy ? 'Загрузка…' : 'Начать'} <Icon name="arrow-up-right" />
             </button>
           )}
           <span className="hero-smallprint">Без регистрации.<br />Видео остаётся в браузере.</span>
         </div>
-        <div className="hero-bottom"><span>ПРОЕКТ UPROSTI.TECH</span><span aria-hidden="true">↓</span></div>
+        <div className="hero-bottom"><span>ПРОЕКТ UPROSTI.TECH</span><Icon name="arrow-down" /></div>
       </div>
       <div className="hero-cat-card">
-        <div className="hero-cat-heading"><span>MEME.CV</span><span className="hero-card-star" aria-hidden="true">✳</span></div>
+        <div className="hero-cat-heading"><span>MEME.CV</span><Icon name="asterisk" className="hero-card-star" /></div>
         <div className="hero-cat-art" aria-hidden="true">
           <svg viewBox="0 0 460 430" fill="none" className="hero-cat-svg">
             <g className="cat-orbit" stroke="currentColor" strokeWidth="1.2" opacity=".38">
@@ -45,7 +47,7 @@ export function ReleaseHero({ onStart, busy, running }: ReleaseHeroProps) {
             <g transform="translate(352 328) rotate(12)" stroke="currentColor" strokeWidth="1.5"><circle r="31" fill="#f3f2ee" /><path d="m-10 3 7 7 15-18" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></g>
           </svg>
         </div>
-        <div className="hero-cat-footer"><span>Камера → кот.</span><span aria-hidden="true">↗</span></div>
+        <div className="hero-cat-footer"><span>Камера <Icon name="arrow-right" /> кот.</span><Icon name="arrow-up-right" /></div>
       </div>
     </section>
   )
