@@ -48,7 +48,7 @@ test('real MediaPipe models initialize and process synthetic camera frames', asy
   await expect(page.locator('.camera-hud')).toContainText(/[1-9]\d* мс/, { timeout: 20000 })
   await expect(page.locator('.cv-canvas')).toHaveAttribute('width', '640')
   const mediaGeometry = await page.evaluate(() => {
-    const selectors = ['.hero-copy', '.hero-cat-card', '.camera-panel', '.result-panel']
+    const selectors = ['.camera-panel', '.result-panel']
     return {
       squares: selectors.map(selector => { const b = document.querySelector(selector)!.getBoundingClientRect(); return [b.width, b.height] }),
       media: ['video', '.cv-canvas'].map(selector => { const b = document.querySelector(selector)!.getBoundingClientRect(); return [b.x, b.y, b.width, b.height] }),

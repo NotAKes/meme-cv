@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useScrollReveal } from './hooks/useScrollReveal'
 import { Tracker } from './lib/tracker'
 import { drawOverlay } from './lib/overlay'
 import type { OverlayOptions } from './lib/overlay'
@@ -33,6 +34,7 @@ function tongueReasonLabel(reason: string) {
 }
 
 export default function App() {
+  const revealRoot = useScrollReveal()
   const [cameraReady, setCameraReady] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -250,30 +252,30 @@ export default function App() {
   }
 
   const busy = status === 'loading'
-  return <main>
+  return <main ref={revealRoot}>
     <a className="skip-link" href="#playground">Перейти к камере</a>
     <ReleaseHero onStart={() => { void start(); document.getElementById('playground')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }) }} busy={busy} running={status === 'running'} />
     <div className="workspace" id="playground">
-      <section className="panel camera-panel" aria-label="Камера"><div className="panel-heading"><span className="mono">{cameraReady ? 'Включена' : busy ? 'Подключение' : 'Выключена'}</span></div>
+      <section className="panel camera-panel" aria-label="Камера"><div data-reveal className="panel-heading"><span className="mono">{cameraReady ? 'Включена' : busy ? 'Подключение' : 'Выключена'}</span></div>
         <div className="camera-stage">
           <video ref={videoRef} muted playsInline className={cameraReady ? 'visible' : ''} />
           <canvas ref={canvasRef} className="cv-canvas" aria-label="Разметка лица и рук" />
-          {status !== 'running' && <div className={`camera-placeholder${cameraReady ? ' camera-loading' : ''}`}><div className="viewfinder"><Icon name="plus" /></div><h3>{busy ? 'Загрузка моделей' : status === 'error' ? 'Не получилось подключиться' : 'Камера выключена'}</h3><p role="status">{busy || status === 'error' ? message : 'Видео обрабатывается в браузере.'}</p>{!busy && <button className="primary" onClick={start}><Icon name="arrow-up-right" /> Включить камеру</button>}</div>}
+          {status !== 'running' && <div data-reveal className={`camera-placeholder${cameraReady ? ' camera-loading' : ''}`}><div className="viewfinder"><Icon name="plus" /></div><h3>{busy ? 'Загрузка моделей' : status === 'error' ? 'Не получилось подключиться' : 'Камера выключена'}</h3><p role="status">{busy || status === 'error' ? message : 'Видео обрабатывается в браузере.'}</p>{!busy && <button className="primary" onClick={start}><Icon name="arrow-up-right" /> Включить камеру</button>}</div>}
           {status === 'running' && <><span className="live-badge"><i /> Камера включена</span><div className="camera-hud"><span>{metrics.face ? 'Лицо найдено' : 'Лицо не найдено'}. Рук в кадре: {metrics.hands}</span><span>{metrics.fps} кадров/с · {metrics.ms} мс</span></div></>}
         </div>
-        <div className="camera-footer"><span>{status === 'running' ? 'Один человек в кадре' : 'Камера включается по кнопке'}</span>{(busy || status === 'running') && <button className="text-button" onClick={stop}>{busy ? 'Отмена' : <><Icon name="stop" /> Остановить</>}</button>}</div>
+        <div data-reveal className="camera-footer"><span>{status === 'running' ? 'Один человек в кадре' : 'Камера включается по кнопке'}</span>{(busy || status === 'running') && <button className="text-button" onClick={stop}>{busy ? 'Отмена' : <><Icon name="stop" /> Остановить</>}</button>}</div>
       </section>
-      <section className="panel result-panel"><div className="panel-heading"><h2>Результат</h2></div>
-        <div className="meme-display" ref={artRef}>{active ? <MemeArt meme={active} imageUrl={imageUrls[active.id]} /> : <div className="result-placeholder"><CatMark className="result-cat-mark" /><p>{status === 'running' ? 'Покажи мимику или жест' : 'Включи камеру'}</p></div>}</div>
-        <div className="export-row"><button className="secondary" disabled={!active || saving || status !== 'running'} onClick={saveCollage}>{saving ? 'Сохраняем…' : <><Icon name="arrow-down" /> Сохранить коллаж</>}</button><label className="small-check"><input type="checkbox" checked={includeOverlay} onChange={e => setIncludeOverlay(e.target.checked)} /> С разметкой</label></div>
+      <section className="panel result-panel"><div data-reveal className="panel-heading"><h2>Результат</h2></div>
+        <div className="meme-display" ref={artRef}>{active ? <MemeArt meme={active} imageUrl={imageUrls[active.id]} /> : <div data-reveal className="result-placeholder"><CatMark className="result-cat-mark" /><p>{status === 'running' ? 'Покажи мимику или жест' : 'Включи камеру'}</p></div>}</div>
+        <div data-reveal className="export-row"><button className="secondary" disabled={!active || saving || status !== 'running'} onClick={saveCollage}>{saving ? 'Сохраняем…' : <><Icon name="arrow-down" /> Сохранить коллаж</>}</button><label className="small-check"><input type="checkbox" checked={includeOverlay} onChange={e => setIncludeOverlay(e.target.checked)} /> С разметкой</label></div>
       </section>
     </div>
-    <section className="panel controls"><div className="control-group"><div className="control-title"><h2>Разметка</h2><label className="switch"><input aria-label="Показать CV-разметку" type="checkbox" checked={overlay.enabled} onChange={e => setOverlay({ ...overlay, enabled: e.target.checked })} /><span /></label></div><p>Выбери, что показать поверх видео.</p><div className="layer-options">{([['boxes', 'Рамки'], ['face', 'Мимика'], ['pose', 'Руки'], ['hands', 'Пальцы'], ['mesh', 'Сетка лица']] as const).map(([key, label]) => <label key={key}><input type="checkbox" disabled={!overlay.enabled} checked={overlay[key]} onChange={e => setOverlay({ ...overlay, [key]: e.target.checked })} />{label}</label>)}</div></div><div className="control-group"><h2>Сравнение</h2><p>По лицу, рукам или вместе.</p><div className="segmented" role="group" aria-label="Режим сравнения">{([['combined', 'Вместе'], ['face', 'Мимика'], ['pose', 'Поза']] as const).map(([value, label]) => <button key={value} aria-pressed={mode === value} className={mode === value ? 'selected' : ''} onClick={() => setMode(value)}>{label}</button>)}</div></div></section>
+    <section className="panel controls"><div className="control-group"><div data-reveal><div className="control-title"><h2>Разметка</h2><label className="switch"><input aria-label="Показать CV-разметку" type="checkbox" checked={overlay.enabled} onChange={e => setOverlay({ ...overlay, enabled: e.target.checked })} /><span /></label></div><p>Выбери, что показать поверх видео.</p><div className="layer-options">{([['boxes', 'Рамки'], ['face', 'Мимика'], ['pose', 'Руки'], ['hands', 'Пальцы'], ['mesh', 'Сетка лица']] as const).map(([key, label]) => <label key={key}><input type="checkbox" disabled={!overlay.enabled} checked={overlay[key]} onChange={e => setOverlay({ ...overlay, [key]: e.target.checked })} />{label}</label>)}</div></div></div><div className="control-group"><div data-reveal><h2>Сравнение</h2><p>По лицу, рукам или вместе.</p><div className="segmented" role="group" aria-label="Режим сравнения">{([['combined', 'Вместе'], ['face', 'Мимика'], ['pose', 'Поза']] as const).map(([value, label]) => <button key={value} aria-pressed={mode === value} className={mode === value ? 'selected' : ''} onClick={() => setMode(value)}>{label}</button>)}</div></div></div></section>
     {message && status === 'running' && <p role="status" className="notice">{message.startsWith('Не удалось') ? message : ''}</p>}
     <div className="recognition-help"><button className="text-button" onClick={() => { setAdvancedOpen(true); document.getElementById('recognition-settings')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }) }}>Открыть настройки <Icon name="arrow-up-right" /></button></div>
     <details className="advanced-settings" open={advancedOpen} onToggle={e => setAdvancedOpen(e.currentTarget.open)} id="recognition-settings"><summary>Настройки <Icon name="plus" /></summary>
     <section className="panel calibration-panel" aria-label="Калибровка распознавания">
-      <div><h2>Калибровка</h2><p>Можно пропустить. Нужна, если распознавание ошибается.</p></div>
+      <div><h2 data-reveal>Калибровка</h2><p>Можно пропустить. Нужна, если распознавание ошибается.</p></div>
       <div className="calibration-actions"><button className="secondary" disabled={status !== 'running' || capturing !== null || tongueCapturing} onClick={() => capturePose('neutral')}>{capturing === 'neutral' ? 'Удерживайте 3 секунды…' : calibration.neutral ? 'Повторить калибровку лица' : 'Калибровать лицо'}</button><button className="text-button" disabled={capturing !== null || tongueCapturing} onClick={() => { commitCalibration(emptyCalibration()); setCalibrationMessage('Калибровка сброшена.') }}>Сбросить настройки</button></div>
       <p aria-live="polite">{calibrationMessage}</p>
       <TongueCalibration ref={tongueCalibrationRef} enabled={status === 'running' && capturing === null} profile={calibration.tongueProfile} onBusy={setTongueCapturing} onProfile={profile => commitCalibration({ ...optionsRef.current.calibration, tongueProfile: profile })} />
@@ -283,8 +285,8 @@ export default function App() {
         </div></div>
       <p className="tongue-warning">Распознавание языка экспериментальное и может ошибаться. При смене света настройку можно повторить.</p>
     </section>
-    <section className="details-grid"><div><div className="section-heading"><h2>Другие варианты</h2></div><div className="alternatives">{(ranking.length ? ranking.filter(r => r.meme.id !== activeId).slice(0, 3).map(r => r.meme) : memes.slice(0, 3)).map(meme => <article className="mini-meme" key={meme.id}><MemeArt meme={meme} imageUrl={imageUrls[meme.id]} /></article>)}</div></div><div className="signals"><div className="section-heading"><h2>Сигналы</h2><span className="mono">От 0 до 1</span></div>{Object.entries(featureLabels).map(([key, label]) => { const value = features[key as keyof Features]; return <div className="signal" key={key}><span>{label}</span><div className="track"><div style={{ width: `${(value ?? 0) * 100}%` }} /></div><code>{value === undefined ? 'нет данных' : value.toFixed(2)}</code></div> })}</div></section>
+    <section className="details-grid"><div><div className="section-heading"><h2 data-reveal>Другие варианты</h2></div><div className="alternatives">{(ranking.length ? ranking.filter(r => r.meme.id !== activeId).slice(0, 3).map(r => r.meme) : memes.slice(0, 3)).map(meme => <article className="mini-meme" key={meme.id}><MemeArt meme={meme} imageUrl={imageUrls[meme.id]} /></article>)}</div></div><div className="signals"><div className="section-heading"><h2 data-reveal>Сигналы</h2><span className="mono">От 0 до 1</span></div>{Object.entries(featureLabels).map(([key, label]) => { const value = features[key as keyof Features]; return <div className="signal" key={key}><span>{label}</span><div className="track"><div style={{ width: `${(value ?? 0) * 100}%` }} /></div><code>{value === undefined ? 'нет данных' : value.toFixed(2)}</code></div> })}</div></section>
     </details>
-    <footer><a href="https://uprosti.tech">uprosti.tech</a><span>2026</span><a href="#playground">К камере <Icon name="arrow-up-right" /></a></footer>
+    <footer><a data-reveal href="https://uprosti.tech">uprosti.tech</a><span data-reveal>2026</span><a data-reveal href="#playground">К камере <Icon name="arrow-up-right" /></a></footer>
   </main>
 }

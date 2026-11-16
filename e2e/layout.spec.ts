@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
 for (const width of [390, 768, 1024, 1280, 1440]) {
-  test(`four edge-to-edge squares and rectangular controls at ${width}px`, async ({ page }) => {
+  test(`viewport introduction and square workspace at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1100 })
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await page.goto('/')
@@ -39,7 +39,9 @@ for (const width of [390, 768, 1024, 1280, 1440]) {
     const [copy, cat, camera, result] = layout.squares
     near(copy.left, 0); near(copy.top, 0)
     if (width > 800) {
-      for (const box of layout.squares) { near(box.width, width / 2); near(box.height, width / 2) }
+      for (const box of layout.squares) near(box.width, width / 2)
+      near(copy.height, 1100); near(cat.height, 1100)
+      near(camera.height, width / 2); near(result.height, width / 2)
       near(copy.right, cat.left); near(cat.right, width); near(copy.top, cat.top)
       near(copy.bottom, camera.top); near(cat.bottom, result.top)
       near(camera.right, result.left); near(result.right, width)
@@ -94,8 +96,7 @@ for (const { browser, dpr } of [
           const [copy, cat, camera, result] = boxes
           for (const box of boxes) {
             expect(box.width).toBe(width / 2)
-            expect(box.height).toBe(copy.height)
-            expect(box.height).toBe(box.width)
+            expect(box.height).toBe(box === copy || box === cat ? 1100 : box.width)
             expect(box.borders).toEqual(['0px', '0px', '0px', '0px'])
           }
           expect(copy.bottom).toBe(camera.top)
