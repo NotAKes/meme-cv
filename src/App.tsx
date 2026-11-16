@@ -254,7 +254,7 @@ export default function App() {
     <a className="skip-link" href="#playground">Перейти к камере</a>
     <ReleaseHero onStart={() => { void start(); document.getElementById('playground')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }) }} busy={busy} running={status === 'running'} />
     <div className="workspace" id="playground">
-      <section className="panel camera-panel"><div className="panel-heading"><h2><span className="dot" /> Твоя камера</h2><span className="mono">{cameraReady ? 'Включена' : busy ? 'Подключение' : 'Выключена'}</span></div>
+      <section className="panel camera-panel" aria-label="Камера"><div className="panel-heading"><span className="mono">{cameraReady ? 'Включена' : busy ? 'Подключение' : 'Выключена'}</span></div>
         <div className="camera-stage">
           <video ref={videoRef} muted playsInline className={cameraReady ? 'visible' : ''} />
           <canvas ref={canvasRef} className="cv-canvas" aria-label="Разметка лица и рук" />

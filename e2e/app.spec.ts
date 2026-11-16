@@ -43,6 +43,7 @@ test('real MediaPipe models initialize and process synthetic camera frames', asy
   await page.goto('/')
   await page.getByRole('button', { name: 'Включить камеру' }).click()
   await expect(page.locator('.live-badge')).toBeVisible({ timeout: 60000 })
+  await expect(page.getByRole('region', { name: 'Камера', exact: true }).locator('.panel-heading .mono')).toHaveText('Включена')
   await expect(page.locator('.camera-hud')).toContainText('Лицо не найдено', { timeout: 20000 })
   await expect(page.locator('.camera-hud')).toContainText(/[1-9]\d* мс/, { timeout: 20000 })
   await expect(page.locator('.cv-canvas')).toHaveAttribute('width', '640')
@@ -63,6 +64,7 @@ test('real MediaPipe models initialize and process synthetic camera frames', asy
   await page.getByRole('checkbox', { name: 'Показать CV-разметку' }).uncheck()
   await page.getByRole('button', { name: 'Остановить' }).click()
   await expect(page.getByRole('button', { name: 'Включить камеру' })).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Камера', exact: true }).locator('.panel-heading .mono')).toHaveText('Выключена')
   expect(errors).toEqual([])
   await context.close()
 })
@@ -158,4 +160,18 @@ test('personal tongue wizard collects both negative poses and tongue, persists a
   await expect(wizard.getByText('ПРОФИЛЬ СОХРАНЁН')).toBeVisible()
   await wizard.getByRole('button', { name: 'Сбросить профиль языка' }).click()
   await expect(wizard.getByText('ЭКСПЕРИМЕНТ', { exact: true })).toBeVisible()
+})
+
+
+test('camera heading retains its loading status without a visible title or dot', async ({ page }) => {
+  await page.addInitScript(() => {
+    navigator.mediaDevices.getUserMedia = () => new Promise(() => {})
+  })
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Включить камеру' }).click()
+  const camera = page.getByRole('region', { name: 'Камера', exact: true })
+  await expect(camera.locator('.panel-heading .mono')).toHaveText('Подключение')
+  await expect(camera.locator('.panel-heading h2, .panel-heading .dot')).toHaveCount(0)
+  await page.getByRole('button', { name: 'Отмена', exact: true }).click()
+  await expect(camera.locator('.panel-heading .mono')).toHaveText('Выключена')
 })

@@ -18,6 +18,20 @@ for (const width of [390, 768, 1024, 1280, 1440]) {
           .filter(el => el.getClientRects().length).filter(el => getComputedStyle(el).borderTopLeftRadius !== '0px').length,
       }
     })
+    const cameraRegion = page.getByRole('region', { name: 'Камера', exact: true })
+    await expect(cameraRegion).toBeVisible()
+    await expect(cameraRegion.getByRole('heading', { name: 'Твоя камера' })).toHaveCount(0)
+    await expect(page.getByText('Твоя камера', { exact: true })).toHaveCount(0)
+    await expect(cameraRegion.locator('.panel-heading h2, .panel-heading .dot')).toHaveCount(0)
+    await expect(cameraRegion.locator('.panel-heading .mono')).toHaveText('Выключена')
+    await expect(page.getByRole('heading', { name: 'Результат', exact: true })).toBeVisible()
+    const headings = await page.locator('.camera-panel > .panel-heading, .result-panel > .panel-heading').evaluateAll(els => els.map(el => {
+      const box = el.getBoundingClientRect()
+      return { height: box.height, right: box.right }
+    }))
+    const status = await cameraRegion.locator('.panel-heading .mono').boundingBox()
+    expect(status!.x + status!.width).toBeCloseTo(headings[0].right, 1)
+    expect(headings[0].height).toBe(headings[1].height)
     const layout = await measure()
     const near = (a: number, b: number) => expect(Math.abs(a - b)).toBeLessThanOrEqual(1)
     expect(layout.overflow).toBeLessThanOrEqual(0)
